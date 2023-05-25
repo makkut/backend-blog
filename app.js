@@ -5,7 +5,9 @@ import chalk from "chalk";
 import cors from "cors";
 import initDatabase from "./startUp/initDatabase.js";
 import routes from "./routes/index.js";
+import dotenv from "dotenv";
 
+dotenv.config();
 const app = express();
 
 app.use(express.json());
@@ -13,7 +15,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/api", routes);
 app.use(cors());
 
-const PORT = config.get("port") ?? 8080;
+const PORT = process.env.PORT || 5000;
 
 // if (process.env.NODE_ENV === "production") {
 //   console.log("Production");
@@ -26,7 +28,7 @@ async function start() {
     mongoose.connection.once("open", () => {
       initDatabase();
     });
-    await mongoose.connect(config.get("mongoUri"));
+    await mongoose.connect(process.env.MONGODB_URI);
     app.listen(PORT, () =>
       console.log(chalk.green(`Server has been started on port ${PORT}`))
     );
